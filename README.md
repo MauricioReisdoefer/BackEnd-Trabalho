@@ -1,2 +1,12 @@
-# BackEnd-Trabalho
-Repositório do que o Marcus tá me ajudando à fazer
+# Principais Rotas #
+
+## /Topics ##
+## /Topics/CreateTopic ##
+
+## /Topics/:id ##
+## /Topico/:id/CreatePost ##
+
+## /Sign In ##
+## /Sign Up ##
+## /:account ##
+
