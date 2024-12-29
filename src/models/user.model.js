@@ -4,8 +4,12 @@ function defineUser(sequelize)
 {
     class User extends Model{
         static associate(models){
-            User.hasMany(models.Post);
-            User.hasMany(models.Topic);
+                User.hasMany(models.Post, {
+                    foreignKey: 'user_id'
+                });
+            User.hasMany(models.Topic, {
+                foreignKey: 'user_id'
+            });
         }
     }
     User.init({
