@@ -11,7 +11,7 @@ app.use(express.json());
 
 app.use('/Posts', PostRoutes)
 app.use('/User', UserRoutes)
-app.use('/Posts', TopicRoutes)
+app.use('/Topic', TopicRoutes)
 
 app.listen(PORT, ()=>{
     console.log(`App listening on port ${PORT}`);
