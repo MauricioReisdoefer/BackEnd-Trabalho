@@ -10,12 +10,14 @@ router.get("/GetUser/:id", controllers.getUser);
 
 router.put("/UpdateUser/:id", controllers.updateUser);
 
-router.get("/RemoveUser/:id", controllers.removeUser);
+router.delete("/RemoveUser/:id", controllers.removeUser);
 
 router.get("/AllUsers", controllers.allUsers);
 
 router.get("/GetUser/Topics/:id", controllers.userTopics);
 
 router.get("/GetUser/Posts/:id", controllers.userPosts);
+
+router.post("/UserLogin/:id", controllers.userLogin);
 
 module.exports = router;

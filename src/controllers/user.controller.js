@@ -1,4 +1,5 @@
 const models = require("../db.js");
+const jwt = require("jsonwebtoken")
 
 exports.createUser = async function createUser(req, res){
     const { username_, password_, email_ } = req.body;
@@ -82,4 +83,19 @@ exports.userPosts = async function userPosts(req, res){
         user: user.toJSON(),
         topics: allPosts
     });
+}
+
+exports.userLogin = async function userLogin(req, res){
+    const user_id_ = req.params['id'];
+    const user = await models.User.findByPk(user_id_);
+    if (!user) {
+        return res.status(404).json({ error: "Usuário Não Encontrado" });
+    }
+    const newToken = jwt.sign({user_id: user_id_}, 'senhasupersecreta');
+    const decodedToken = jwt.decode(newToken);
+    res.json({ 
+        message: "Login do User",
+        webtoken: newToken,
+        decoded: decodedToken,
+    })
 }
