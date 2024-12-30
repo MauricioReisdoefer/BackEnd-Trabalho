@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken")
-exports.ensureLoggedIn = async function ensureLoggedIn(req, res){
+exports.ensureLoggedIn = async function ensureLoggedIn(req, res, next){
     const token  = req.headers.authorization;
     console.log(token);
     let decoded;
@@ -8,5 +8,6 @@ exports.ensureLoggedIn = async function ensureLoggedIn(req, res){
     } catch(error){
         return res.status(401).json({ err: "Token Falso" });
     }
-    res.json(decoded);
+    req.user_id = decoded.user_id;
+    next();
 }

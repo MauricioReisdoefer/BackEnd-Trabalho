@@ -8,8 +8,7 @@ exports.createUser = async function createUser(req, res){
         password: password_,
         email: email_
     })
-    console.log(newUser)
-    res.json(newUser.toJSON());
+    res.status(201).json(newUser.toJSON());
 }
 
 exports.getUser = async function getUser(req, res){
@@ -18,7 +17,7 @@ exports.getUser = async function getUser(req, res){
     if (!user) {
         return res.status(404).json({ error: "Usuário Não Encontrado" });
     }
-    res.json(user.toJSON());
+    res.status(200).json(user.toJSON());
 }
 
 exports.updateUser = async function updateUser(req, res){
@@ -34,7 +33,7 @@ exports.updateUser = async function updateUser(req, res){
     if (email_ != undefined){ user.email = email_};
     await user.save();
 
-    res.json({ message: "Usuário atualizado com sucesso", user: user.toJSON()});
+    res.status(200).json({ message: "Usuário atualizado com sucesso", user: user.toJSON()});
 }
 
 exports.removeUser = async function removeUser(req, res){
@@ -44,7 +43,7 @@ exports.removeUser = async function removeUser(req, res){
         return res.status(404).json({ error: "Usuário Não Encontrado" })
     }
     await user.destroy();
-    res.json({message : "Destruído com Sucesso", user: user.toJSON()})
+    res.status(200).json({message : "Destruído com Sucesso", user: user.toJSON()})
 }
 
 exports.allUsers = async function allUsers(req, res){
@@ -64,8 +63,7 @@ exports.userTopics = async function userTopics(req, res){
     const allTopics = await models.Topic.findAll({
         where:{user_id: user_id_}
     })
-    res.json({
-        user: user.toJSON(),
+    res.status(200).json({
         topics: allTopics
     });
 }
@@ -79,8 +77,7 @@ exports.userPosts = async function userPosts(req, res){
     const allPosts = await models.Post.findAll({
         where:{user_id: user_id_}
     })
-    res.json({
-        user: user.toJSON(),
+    res.status(200).json({
         topics: allPosts
     });
 }

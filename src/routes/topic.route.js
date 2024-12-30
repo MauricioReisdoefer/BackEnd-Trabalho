@@ -8,9 +8,9 @@ router.post("/CreateTopic", auth.ensureLoggedIn, controllers.createTopic);
 
 router.get("/GetTopic/:id", controllers.getTopic);
 
-router.get("/RemoveTopic/:id", controllers.removeTopic);
+router.get("/RemoveTopic/:id", auth.ensureLoggedIn, controllers.removeTopic);
 
-router.put("/UpdateTopic/:id", controllers.updateTopic);
+router.put("/UpdateTopic/:id", auth.ensureLoggedIn, controllers.updateTopic);
 
 router.get("/GetTopic/Posts/:id", controllers.getTopicPosts);
 
