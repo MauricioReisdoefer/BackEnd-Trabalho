@@ -1,22 +1,31 @@
+const errorTypes = require("../errors.js");
 const models = require("../db.js");
 
 exports.createPost = async function createPost(req, res){
-    const { title_, text_, topicid} = req.body;
-    const user = await models.User.findByPk(req.user_id);
-    if(!user){
-        return res.status(404).json({ error: "Usuário Inexistente"});
+    try {
+        const { title_, text_, topicid} = req.body;
+        if(!req.body.title_ || !req.body.text_ || !req.body.topicid){
+            throw new errorTypes.validationError("Body em formato incorreto")
+        }
+        const user = await models.User.findByPk(req.user_id);
+        if(!user){
+            throw new errorTypes.validationError("Usuário não encontrado", 404)
+        }
+        const topic = await models.Topic.findByPk(topicid);
+        if(!topic){
+            throw new errorTypes.validationError("Tópico não encontrado", 404)
+        }
+        const newPost = await models.Post.create({
+            posttitle: title_,
+            text: text_,
+            user_id: req.user_id,
+            topic_id: topicid
+        })
+        res.status(201).json(newPost.toJSON());
     }
-    const topic = await models.Topic.findByPk(topicid);
-    if(!topic){
-        return res.status(404).json({ error: "Tópico Inexistente"});
+    catch(err) {
+        next(err);
     }
-    const newPost = await models.Post.create({
-        posttitle: title_,
-        text: text_,
-        user_id: req.user_id,
-        topic_id: topicid
-    })
-    res.status(201).json(newPost.toJSON());
 }
 
 exports.getPost = async function getPost(req, res){

@@ -3,8 +3,9 @@ const router = express.Router()
 const models = require("../db.js");
 const controllers = require("../controllers/topic.controller.js");
 const auth = require("../middlewares/auth.js");
+const ErrorHandling = require("../middlewares/errorHandling.js")
 
-router.post("/CreateTopic", auth.ensureLoggedIn, controllers.createTopic);
+router.post("/CreateTopic", auth.ensureLoggedIn,controllers.createTopic);
 
 router.get("/GetTopic/:id", controllers.getTopic);
 
