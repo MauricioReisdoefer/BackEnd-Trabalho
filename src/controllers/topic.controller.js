@@ -4,12 +4,12 @@ const models = require("../db.js");
 exports.createTopic = async function createTopic(req, res, next){
     try{
         const { title_, text_ } = req.body;
-        if(!title_ || !text_){
+        if (!title_ || !text_) {
             throw new errorTypes.validationError("Body em formato incompleto");
         }
         const user = await models.User.findByPk(req.user_id);
         if(!user){
-            throw new errorTypes.validationError("Usuário não encontrado", 404);
+            throw new errorTypes.notFoundError("Usuário não encontrado", 404);
         }
         const newTopic = await models.Topic.create({
             topicname: title_,
@@ -27,7 +27,7 @@ exports.getTopic = async function getTopic(req, res, next){
         const topic_id_ = req.params['id'];
         const topic = await models.Topic.findByPk(topic_id_);
         if (!topic) {
-            throw new errorTypes.validationError("Tópico não encontrado", 404)
+            throw new errorTypes.notFoundError("Tópico não encontrado", 404)
         }
         res.json(topic.toJSON());
     } catch(err){
@@ -36,18 +36,18 @@ exports.getTopic = async function getTopic(req, res, next){
 }
 
 exports.removeTopic = async function removeTopic(req, res, next){
-    try{
+    try {
         const topic_id_ = req.params['id'];
         const topic = await models.Topic.findByPk(topic_id_);
         if (!topic) {
-            throw new errorTypes.validationError("Tópico não encontrado", 404);
+            throw new errorTypes.notFoundError("Tópico não encontrado", 404);
         }
         if(req.user_id == topic.user_id)
         {
             await topic.destroy();
             return res.json({message : "Destruído com Sucesso", topic: topic.toJSON()})
         }
-        throw new errorTypes.validationError("Não é dono do tópico", 401);
+        throw new errorTypes.authError("Não é dono do tópico", 401);
     } catch(err){
         next(err);
     }
@@ -62,7 +62,7 @@ exports.updateTopic = async function updateTopic(req, res, next){
         }
         const topic = await models.Topic.findByPk(topic_id_);
         if (!topic) {
-            throw new errorTypes.validationError("Tópico não encontrado", 404);
+            throw new errorTypes.notFoundError("Tópico não encontrado", 404);
         }
         if(req.user_id == topic.user_id)
         {
@@ -82,7 +82,8 @@ exports.getTopicPosts = async function getTopicPosts(req, res, next){
         const topic_id_ = req.params['id'];
         const topic = await models.Topic.findByPk(topic_id_);
         if (!topic) {
-            throw new errorTypes.validationError("Tópico não encontrado", 404);
+            // TODO: NotFoundError
+            throw new errorTypes.validationError(`Tópico com id ${topic_id_} não encontrado`, 404);
         }
 
         const allPosts = await models.Post.findAll({

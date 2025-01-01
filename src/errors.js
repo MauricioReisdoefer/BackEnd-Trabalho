@@ -12,9 +12,17 @@ exports.authError = class authorizationError extends exports.APIError {
 };
 
 exports.validationError = class validationError extends exports.APIError {
-    constructor(message_, field, cause, status = 421) {
+    constructor(message_, fields = [], status = 421) {
         super(message_, status); 
-        this.field = field;
-        this.cause = cause;
+        this.fields = fields;
     }
+    addField(fieldName, errorMessage) {
+        this.fields[fieldName] = errorMessage;
+    } 
 };
+
+exports.notFoundError = class notFoundError extends exports.APIError {
+    constructor(message_, status = 404){
+        super(message_, status)
+    }
+}

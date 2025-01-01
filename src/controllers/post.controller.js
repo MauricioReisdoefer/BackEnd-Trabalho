@@ -1,7 +1,7 @@
 const errorTypes = require("../errors.js");
 const models = require("../db.js");
 
-exports.createPost = async function createPost(req, res){
+exports.createPost = async function createPost(req, res, next){
     try {
         const { title_, text_, topicid} = req.body;
         if(!req.body.title_ || !req.body.text_ || !req.body.topicid){
@@ -9,11 +9,11 @@ exports.createPost = async function createPost(req, res){
         }
         const user = await models.User.findByPk(req.user_id);
         if(!user){
-            throw new errorTypes.validationError("Usuário não encontrado", 404)
+            throw new errorTypes.notFoundError("Usuário não encontrado")
         }
         const topic = await models.Topic.findByPk(topicid);
         if(!topic){
-            throw new errorTypes.validationError("Tópico não encontrado", 404)
+            throw new errorTypes.notFoundError("Tópico não encontrado")
         }
         const newPost = await models.Post.create({
             posttitle: title_,
@@ -28,41 +28,53 @@ exports.createPost = async function createPost(req, res){
     }
 }
 
-exports.getPost = async function getPost(req, res){
-    const post_id_ = req.params['id'];
-    const post = await models.Topic.findByPk(post_id_);
-    if (!post) {
-        return res.status(404).json({ error: "Post Não Encontrado" });
+exports.getPost = async function getPost(req, res, next){
+    try{
+        const post_id_ = req.params['id'];
+        const post = await models.Topic.findByPk(post_id_);
+        if (!post) {
+            throw new errorTypes.notFoundError("Post não encontrado");
+        }
+        res.status(200).json(post.toJSON());
+    } catch(err){
+        next(err);
     }
-    res.status(200).json(post.toJSON());
 }
 
-exports.deletePost = async function deletePost(req, res){
-    const post_id_ = req.params['id'];
-    const post = await models.User.findByPk(post_id_);
-    if (!post) {
-        return res.status(404).json({ error: "Post Não Encontrado" });
+exports.deletePost = async function deletePost(req, res, next){
+    try{
+        const post_id_ = req.params['id'];
+        const post = await models.User.findByPk(post_id_);
+        if (!post) {
+            throw new errorTypes.notFoundError("Post não encontrado");
+        }
+        if(post.user_id == req.user_id){
+            await post.destroy();
+            return res.status(200).json({message : "Destruído com Sucesso", post: post.toJSON()});
+        }
+        throw new errorTypes.authErrorError("Não é o dono do Post", 401);
+    } catch(err){
+        next(err);
     }
-    if(post.user_id == req.user_id){
-        await post.destroy();
-        return res.status(200).json({message : "Destruído com Sucesso", post: post.toJSON()});
-    }
-    return res.status(401).json({error: "Não é o dono do Post"});
 }
 
 exports.updatePost = async function updatePost(req, res){
-    const post_id_ = req.params['id'];
-    const { title_, text_} = req.body;
-    const post = await models.User.findByPk(post_id_);
-    if (!post) {
-        return res.status(404).json({ error: "Post Não Encontrado" });
+    try{
+        const post_id_ = req.params['id'];
+        const { title_, text_} = req.body;
+        const post = await models.User.findByPk(post_id_);
+        if (!post) {
+            throw new errorTypes.notFoundError("Post não encontrado");
+        }
+        if(post.user_id == req.user_id)
+        {
+            if (title_ != undefined){ post.posttitle = title_};
+            if (text_ != undefined){ post.text = text_};
+            await post.save();
+            res.status(200).json({ message: "Post atualizado com sucesso", post: post.toJSON()});
+        }
+        throw new errorTypes.authError("Não é o dono do Post", 401);
+    } catch (err){
+        next(err);
     }
-    if(post.user_id == req.user_id)
-    {
-        if (title_ != undefined){ post.posttitle = title_};
-        if (text_ != undefined){ post.text = text_};
-        await post.save();
-        res.status(200).json({ message: "Post atualizado com sucesso", post: post.toJSON()});
-    }
-    return res.status(401).json({error: "Não é o dono do Post"});
 }
