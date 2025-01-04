@@ -1,6 +1,8 @@
 const {Sequelize} = require('sequelize');
-const { FORCE } = require('sequelize/lib/index-hints');
-const sequelize = new Sequelize('sqlite::memory:');
+const sequelize = new Sequelize({
+    dialect: 'sqlite', // Especifica o driver SQLite
+    storage: './BD.sqlite' // Caminho do arquivo SQLite
+});
 
 const Models = {
     User: require("./models/user.model.js")(sequelize),
@@ -18,5 +20,7 @@ async function sincronizaBanco(){
     }
 }
 
-sincronizaBanco();
-module.exports = Models
+module.exports = {
+    sincronizaBanco,
+    models: Models
+};

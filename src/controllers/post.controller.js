@@ -1,5 +1,5 @@
 const errorTypes = require("../errors.js");
-const models = require("../db.js");
+const { models } = require("../db.js");
 
 exports.createPost = async function createPost(req, res, next){
     try {

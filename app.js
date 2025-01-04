@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const PORT = 8080;
-const models = require("./src/db.js");
+const { sincronizaBanco, models } = require("./src/db.js");
 
 const PostRoutes = require("./src/routes/post.route.js");
 const UserRoutes = require("./src/routes/user.route.js");
@@ -16,11 +16,20 @@ app.use('/Posts', PostRoutes)
 app.use('/User', UserRoutes)
 app.use('/Topic', TopicRoutes)
 
+app.delete('/resetdb', async (req, res, next) => {
+    try {
+        await sincronizaBanco();
+    } catch (err) {
+        return next(err);
+    }
+    return res.status(200).json({ msg: 'banco resetado!' });
+});
 
+// .env NODE_ENV, PORT, SENHA_JWT, etc.
 app.use((err, req, res, next) => {
+    // if (process.env.NODE_ENV === 'development')  
+    console.log(err);
     return res.status(err.status || 500).json(err.message);
 });
 
-app.listen(PORT, ()=>{
-    console.log(`App listening on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`App listening on port ${PORT}`));

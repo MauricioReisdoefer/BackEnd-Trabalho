@@ -1,5 +1,4 @@
-const { where } = require("sequelize");
-const models = require("../db.js");
+const { models } = require("../db.js");
 const jwt = require("jsonwebtoken")
 
 exports.createUser = async function createUser(req, res){
@@ -91,7 +90,8 @@ exports.userLogin = async function userLogin(req, res){
 
     if(password_ == user.password){
         const user_id = user.id;
-        const newToken = jwt.sign({user_id}, 'senhasupersecreta');
+        const newToken = jwt.sign(user_id, 'senhasupersecreta');
+        console.log(newToken)
         return res.json({ 
         webtoken: newToken,
     })
@@ -99,7 +99,7 @@ exports.userLogin = async function userLogin(req, res){
     res.status(400).json({error: "Senha incorreta"})
 }
 
-exports.acessUser = async function acessUser(req, res){
+exports.acessUser = async function accessUser(req, res){
     const user_id_ = req.params['id'];
     if(req.body.id == user_id_){
         const user = await models.User.findByPk(user_id_);

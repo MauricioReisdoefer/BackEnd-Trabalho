@@ -5,11 +5,13 @@ exports.ensureLoggedIn = async function ensureLoggedIn(req, res, next){
     console.log(token);
     let decoded;
     try{
-        decoded = await jwt.verify(token, 'senhasupersecreta');
+        decoded = jwt.verify(token, 'senhasupersecreta');
     } catch(error){
         const newError = new errorTypes.authError("User not logged in. Token invalid");
+        console.log(error)
         next(newError);
     }
-    req.user_id = decoded.user_id;
+    console.log(decoded)
+    req.user_id = decoded;
     next();
 }
