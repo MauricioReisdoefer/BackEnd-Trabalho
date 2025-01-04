@@ -9,10 +9,12 @@ router.post("/CreateTopic", auth.ensureLoggedIn,controllers.createTopic);
 
 router.get("/GetTopic/:id", controllers.getTopic);
 
-router.get("/RemoveTopic/:id", auth.ensureLoggedIn, controllers.removeTopic);
+router.delete("/RemoveTopic/:id", auth.ensureLoggedIn, controllers.removeTopic);
 
 router.put("/UpdateTopic/:id", auth.ensureLoggedIn, controllers.updateTopic);
 
 router.get("/GetTopic/Posts/:id", controllers.getTopicPosts);
+
+router.get("/AllTopics", controllers.getAllTopics)
 
 module.exports = router;

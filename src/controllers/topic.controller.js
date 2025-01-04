@@ -20,7 +20,7 @@ exports.createTopic = async function createTopic(req, res, next){
     } catch(err){
         next(err);
     }
-}
+} //
 
 exports.getTopic = async function getTopic(req, res, next){
     try{
@@ -95,5 +95,17 @@ exports.getTopicPosts = async function getTopicPosts(req, res, next){
         });
     } catch(err){
         next(err);
+    }
+}
+
+exports.getAllTopics = async function getAllTopics(req, res, next){
+    try{
+        const topics = await models.Topic.findAll()
+        if(!topics){
+            return res.status(404).json({ error: "Nenhum Tópico Encontrado" });
+        }
+        res.json(topics)
+    } catch(err){
+        return err
     }
 }

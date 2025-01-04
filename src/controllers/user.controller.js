@@ -1,3 +1,4 @@
+const { where } = require("sequelize");
 const models = require("../db.js");
 const jwt = require("jsonwebtoken")
 
@@ -22,14 +23,13 @@ exports.getUser = async function getUser(req, res){
 
 exports.updateUser = async function updateUser(req, res){
     const user_id_ = req.params['id'];
-    const { username_, password_, email_ } = req.body;
+    const { username_, email_ } = req.body;
     const user = await models.User.findByPk(user_id_);
     if(!user){
         return res.status(404).json({ error: "Usuário Não Encontrado" })
     }
 
     if (username_ != undefined){ user.username = username_};
-    if (password_ != undefined){ user.password = password_};
     if (email_ != undefined){ user.email = email_};
     await user.save();
 
@@ -66,7 +66,7 @@ exports.userTopics = async function userTopics(req, res){
     res.status(200).json({
         topics: allTopics
     });
-}
+}//
 
 exports.userPosts = async function userPosts(req, res){
     const user_id_ = req.params['id'];
@@ -83,16 +83,29 @@ exports.userPosts = async function userPosts(req, res){
 }
 
 exports.userLogin = async function userLogin(req, res){
+    const { username_, password_} = req.body;
+    const user = await models.User.findOne({where: {username: username_}})
+    if (!user) {
+        return res.status(404).json({ error: "Usuário Não Encontrado" });
+    }
+
+    if(password_ == user.password){
+        const user_id = user.id;
+        const newToken = jwt.sign({user_id}, 'senhasupersecreta');
+        return res.json({ 
+        message: "Login do User",
+        webtoken: newToken,
+        user_: user
+    })
+    }
+    res.status(400).json({error: "Senha incorreta"})
+}
+
+exports.acessUser = async function acessUser(req, res){
     const user_id_ = req.params['id'];
     const user = await models.User.findByPk(user_id_);
     if (!user) {
         return res.status(404).json({ error: "Usuário Não Encontrado" });
     }
-    const newToken = jwt.sign({user_id: user_id_}, 'senhasupersecreta');
-    const decodedToken = jwt.decode(newToken);
-    res.json({ 
-        message: "Login do User",
-        webtoken: newToken,
-        decoded: decodedToken,
-    })
+    res.status(200).json(user.toJSON());
 }

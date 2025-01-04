@@ -7,9 +7,11 @@ const PostRoutes = require("./src/routes/post.route.js");
 const UserRoutes = require("./src/routes/user.route.js");
 const TopicRoutes = require("./src/routes/topic.route.js");
 const { errorHandler } = require('./src/middlewares/errorHandling.js');
+const CORS = require('cors')
 
 app.use(express.json());
 
+app.use(CORS())
 app.use('/Posts', PostRoutes)
 app.use('/User', UserRoutes)
 app.use('/Topic', TopicRoutes)
