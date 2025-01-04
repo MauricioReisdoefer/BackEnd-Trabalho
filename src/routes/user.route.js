@@ -20,4 +20,6 @@ router.get("/GetUser/Posts/:id", controllers.userPosts);
 
 router.post("/UserLogin", controllers.userLogin);
 
+router.post("/AcessUser/:id", controllers.acessUser);
+
 module.exports = router;

@@ -101,9 +101,14 @@ exports.userLogin = async function userLogin(req, res){
 
 exports.acessUser = async function acessUser(req, res){
     const user_id_ = req.params['id'];
-    const user = await models.User.findByPk(user_id_);
-    if (!user) {
-        return res.status(404).json({ error: "Usuário Não Encontrado" });
+    if(req.body.id == user_id_){
+        const user = await models.User.findByPk(user_id_);
+        if (!user) {
+            return res.status(404).json({ error: "Usuário Não Encontrado" });
+        }
+        res.status(200).json(user.toJSON());
     }
-    res.status(200).json(user.toJSON());
+    else{
+        res.status(200).json({message: 'Não é dono do Usuário ou não está logado', id_1: user_id_, id_2: req.body.id})
+    }   
 }
