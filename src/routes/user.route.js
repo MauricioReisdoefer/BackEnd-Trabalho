@@ -18,6 +18,6 @@ router.get("/GetUser/Topics/:id", controllers.userTopics);
 
 router.get("/GetUser/Posts/:id", controllers.userPosts);
 
-router.post("/UserLogin/:id", controllers.userLogin);
+router.post("/UserLogin", controllers.userLogin);
 
 module.exports = router;

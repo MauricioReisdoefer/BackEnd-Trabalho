@@ -93,9 +93,7 @@ exports.userLogin = async function userLogin(req, res){
         const user_id = user.id;
         const newToken = jwt.sign({user_id}, 'senhasupersecreta');
         return res.json({ 
-        message: "Login do User",
         webtoken: newToken,
-        user_: user
     })
     }
     res.status(400).json({error: "Senha incorreta"})
