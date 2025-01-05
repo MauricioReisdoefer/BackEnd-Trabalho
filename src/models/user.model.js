@@ -4,10 +4,12 @@ function defineUser(sequelize)
 {
     class User extends Model{
         static associate(models){
-                User.hasMany(models.Post, {
-                    foreignKey: 'user_id'
-                });
+            User.hasMany(models.Post, {
+                as: 'posts',
+                foreignKey: 'user_id'
+            });
             User.hasMany(models.Topic, {
+                as: 'topics',
                 foreignKey: 'user_id'
             });
         }

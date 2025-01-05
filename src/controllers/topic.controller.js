@@ -86,7 +86,11 @@ exports.getTopicPosts = async function getTopicPosts(req, res, next){
         }
 
         const allPosts = await models.Post.findAll({
-            where:{topic_id: topic_id_}
+            where:{topic_id: topic_id_},
+            include:{
+                model: models.User,
+                as: 'user'
+            }
         })
         res.json({
             topic: topic.toJSON(),
@@ -99,12 +103,22 @@ exports.getTopicPosts = async function getTopicPosts(req, res, next){
 
 exports.getAllTopics = async function getAllTopics(req, res, next){
     try{
-        const topics = await models.Topic.findAll()
+        const topics = await models.Topic.findAll({ include: {
+            model: models.User,
+            as: 'user',
+        }})
         if(!topics){
             return res.status(404).json({ error: "Nenhum Tópico Encontrado" });
         }
         res.json(topics)
-    } catch(err){
-        return err
+    } catch (err) {
+        console.log("==================================")
+        console.log("==================================")
+        console.error("Erro ao buscar tópicos:", err); 
+        console.log("==================================")
+        console.log("==================================")
+        return res.status(500).json({ error: "Erro interno do servidor" });
+        
+    
     }
 }

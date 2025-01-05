@@ -10,14 +10,16 @@ const Models = {
     Post: require("./models/post.model.js")(sequelize)
 }
 
+for(const modelKey in Models){
+    Models[modelKey].associate(Models);
+}
 
 
 async function sincronizaBanco(){
-    await sequelize.sync({force : true});
 
-    for(const modelKey in Models){
-        Models[modelKey].associate(Models);
-    }
+
+        await sequelize.sync({force : true});
+
 }
 
 module.exports = {
