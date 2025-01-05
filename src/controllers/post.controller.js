@@ -8,12 +8,9 @@ exports.createPost = async function createPost(req, res, next){
             throw new errorTypes.validationError("Body em formato incorreto")
         }
         const user = await models.User.findByPk(req.user_id);
+        console.log(req.user_id)
         if(!user){
             throw new errorTypes.notFoundError("Usuário não encontrado")
-        }
-        const topic = await models.Topic.findByPk(topicid);
-        if(!topic){
-            throw new errorTypes.notFoundError("Tópico não encontrado")
         }
         const newPost = await models.Post.create({
             posttitle: title_,

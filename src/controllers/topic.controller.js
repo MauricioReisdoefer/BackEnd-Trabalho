@@ -82,7 +82,6 @@ exports.getTopicPosts = async function getTopicPosts(req, res, next){
         const topic_id_ = req.params['id'];
         const topic = await models.Topic.findByPk(topic_id_);
         if (!topic) {
-            // TODO: NotFoundError
             throw new errorTypes.validationError(`Tópico com id ${topic_id_} não encontrado`, 404);
         }
 

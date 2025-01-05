@@ -28,7 +28,10 @@ app.delete('/resetdb', async (req, res, next) => {
 // .env NODE_ENV, PORT, SENHA_JWT, etc.
 app.use((err, req, res, next) => {
     // if (process.env.NODE_ENV === 'development')  
-    console.log(err);
+    console.error(err);
+    console.log('===============')
+    console.log('===============')
+    console.log('===============')
     return res.status(err.status || 500).json(err.message);
 });
 
