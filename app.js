@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const PORT = 8080;
+const PORT = 3000;
 const { sincronizaBanco, models } = require("./src/db.js");
 
 const PostRoutes = require("./src/routes/post.route.js");

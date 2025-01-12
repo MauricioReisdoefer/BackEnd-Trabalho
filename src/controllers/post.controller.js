@@ -3,8 +3,8 @@ const { models } = require("../db.js");
 
 exports.createPost = async function createPost(req, res, next){
     try {
-        const { title_, text_, topicid} = req.body;
-        if(!req.body.title_ || !req.body.text_ || !req.body.topicid){
+        const { text_, topicid} = req.body;
+        if(!req.body.text_ || !req.body.topicid){
             throw new errorTypes.validationError("Body em formato incorreto")
         }
         const user = await models.User.findByPk(req.user_id);
@@ -13,7 +13,6 @@ exports.createPost = async function createPost(req, res, next){
             throw new errorTypes.notFoundError("Usuário não encontrado")
         }
         const newPost = await models.Post.create({
-            posttitle: title_,
             text: text_,
             user_id: req.user_id,
             topic_id: topicid
@@ -58,14 +57,13 @@ exports.deletePost = async function deletePost(req, res, next){
 exports.updatePost = async function updatePost(req, res){
     try{
         const post_id_ = req.params['id'];
-        const { title_, text_} = req.body;
+        const { text_} = req.body;
         const post = await models.User.findByPk(post_id_);
         if (!post) {
             throw new errorTypes.notFoundError("Post não encontrado");
         }
         if(post.user_id == req.user_id)
         {
-            if (title_ != undefined){ post.posttitle = title_};
             if (text_ != undefined){ post.text = text_};
             await post.save();
             res.status(200).json({ message: "Post atualizado com sucesso", post: post.toJSON()});
